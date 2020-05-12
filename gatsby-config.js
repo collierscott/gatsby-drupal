@@ -1,19 +1,23 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
+    title: `Express Scripts Drupal Starter`,
+    description: `Kick off your next, great project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
+    author: `Scott Collier <scollier@express-scripts.com>`,
   },
   plugins: [
-    `gatsby-source-drupal`,
     {
       resolve: `gatsby-source-drupal`,
       options: {
-        baseUrl: `http://gatsby-drupal.ddev.local/`,
-        apiBase: `jsonapi`, // optional, defaults to `jsonapi`
+        baseUrl: `http://localhost:8989`,
+        apiBase: `api`, // optional, defaults to `jsonapi`
       },
     },
-    `gatsby-plugin-react-helmet`,
+    // {
+    //   resolve: `gatsby-source-contenta`,
+    //   options: {
+    //     baseUrl: `http://localhost:8989`
+    //   },
+    // },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
