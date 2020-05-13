@@ -1,10 +1,10 @@
 import React from "react"
-import Link from "gatsby-link"
 import { graphql } from 'gatsby'
-import Layout from "../components/layout"
+import { Helmet } from "react-helmet"
+import Layout from "../components/Layout"
 import SEO from "../components/seo"
-
-//import { rhythm } from "../utils/typography"
+import { Breadcrumbs, Button, Link, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core"
+import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 
 class ArticleTemplate extends React.Component {
   render() {
@@ -14,17 +14,33 @@ class ArticleTemplate extends React.Component {
     const image = recipe.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src
     
     const listItems = recipe.ingredients.map((ingredient, i) =>
-      <li key={i}>{ingredient}</li>
+      <ListItem key={i}>
+        <ListItemIcon>
+          <CheckBoxOutlineBlankIcon />
+        </ListItemIcon>
+        <ListItemText>
+          {ingredient}
+        </ListItemText>
+      </ListItem>
 
     )
     return (
       <Layout>
-        <SEO title={recipe.title} />
-        <Link
-          to="/"
+        <Helmet
+          title={recipe.title}
+          meta={[
+            { name: 'description', content: recipe.summary.value },
+          ]}
         >
-          ← Back
+        <html lang="en"/>
+      </Helmet>
+        <SEO title={recipe.title} />
+        <Breadcrumbs aria-label="breadcrumb">
+        <Link color="inherit" href="/">
+          Home
         </Link>
+        <Typography color="textPrimary">{recipe.title}</Typography>
+        </Breadcrumbs>
         <h4>{recipe.title}</h4>
         <div>
           <img src={image} />
@@ -32,10 +48,11 @@ class ArticleTemplate extends React.Component {
         <div>
           {recipe.difficulty}
         </div>
+        <div dangerouslySetInnerHTML={{__html: recipe.summary.processed }} />
         <div>
-          <ul>
+          <List component="nav" aria-label="ingredients" dense>
             {listItems}
-          </ul>
+          </List>
         </div>
       </Layout>
     )
@@ -50,6 +67,10 @@ export const pageQuery = graphql`
     nodeRecipe(id: {eq: $id}) {
       id
       drupal_id
+      summary: field_summary {
+        value
+        processed
+      }
       ingredients: field_ingredients
       difficulty: field_difficulty
       createdAt: created(formatString: "DD-MM-YYYY")
