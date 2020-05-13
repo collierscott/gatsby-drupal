@@ -12,12 +12,6 @@ module.exports = {
         apiBase: `api`, // optional, defaults to `jsonapi`
       },
     },
-    // {
-    //   resolve: `gatsby-source-contenta`,
-    //   options: {
-    //     baseUrl: `http://localhost:8989`
-    //   },
-    // },
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -26,6 +20,15 @@ module.exports = {
       },
     },
     `gatsby-transformer-sharp`,
+    {
+      resolve: `gatsby-plugin-material-ui`,
+      options: {
+        disableAutoprefixing: false,
+        disableMinification: false,
+      },
+    },
+    `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-sass`,
     `gatsby-plugin-sharp`,
     {
       resolve: `gatsby-plugin-manifest`,
@@ -33,14 +36,14 @@ module.exports = {
         name: `gatsby-starter-default`,
         short_name: `starter`,
         start_url: `/`,
-        background_color: `#663399`,
-        theme_color: `#663399`,
+        background_color: `#14568d`,
+        theme_color: `#14568d`,
         display: `minimal-ui`,
-        icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
+        icon: `src/images/express-scripts__logo.png`, // This path is relative to the root of the site.
       },
     },
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
-    // `gatsby-plugin-offline`,
+    `gatsby-plugin-offline`,
   ],
 }
