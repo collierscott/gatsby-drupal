@@ -22,14 +22,31 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
     // from the fetched data that you can run queries against.
     graphql(
       `{
-          allRecipes {
-            edges {
-              node {
-                id
+        allNodeRecipe {
+          edges {
+            node {
+              id
+              drupal_id
+              title
+              created
+              path {
+                alias
+              }
+              relationships {
+                field_media_image {
+                  relationships {
+                    field_media_image {
+                      localFile {
+                        absolutePath
+                      }
+                    }
+                  }
+                }
               }
             }
           }
         }
+      }
       `
     ).then(result => {
       if (result.errors) {
@@ -37,10 +54,10 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
       }
 
       // Create HN story pages.
-      const articleTemplate = path.resolve(`./src/templates/article.js`)
+      const articleTemplate = path.resolve(`./src/templates/recipe.js`)
       // We want to create a detailed page for each
       // article node. We'll just use the Drupal NID for the slug.
-      _.each(result.data.allRecipes.edges, edge => {
+      _.each(result.data.allNodeRecipe.edges, edge => {
         // Gatsby uses Redux to manage its internal state.
         // Plugins and sites can use functions like "createPage"
         // to interact with Gatsby.

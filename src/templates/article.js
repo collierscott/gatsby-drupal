@@ -9,11 +9,15 @@ import SEO from "../components/seo"
 class ArticleTemplate extends React.Component {
   render() {
     console.log(this.props.data)
-    const recipe = this.props.data.recipes
-    const image = recipe.relationships.image.relationships.imageFile
+    let recipe = this.props.data.allNodeRecipe.edges
 
-    console.log(recipe)
-    const listItems = recipe.ingredients.map((ingredient, i) =>
+    if(recipe.length > 0) {
+      recipe = recipe[0]
+    }
+
+    const image = recipe.node.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src
+    
+    const listItems = recipe.node.ingredients.map((ingredient, i) =>
       <li key={i}>{ingredient}</li>
 
     )
@@ -27,7 +31,7 @@ class ArticleTemplate extends React.Component {
         </Link>
         <h4>{recipe.title}</h4>
         <div>
-          <img src={image.localFile.childImageSharp.fluid.src} />
+          <img src={image} />
         </div>
         <div>
           {recipe.difficulty}
@@ -45,31 +49,41 @@ class ArticleTemplate extends React.Component {
 export default ArticleTemplate
 
 export const pageQuery = graphql`
-  query articleQuery($id: String!) {
-    recipes(id: { eq: $id }) {
-        title
-        createdAt(formatString: "DD-MMM-YYYY")
-        ingredients
-        difficulty
-        preparationTime
-        instructions
-        cookingTime
-        isPublished
-        relationships {
-          image {
-            relationships {
-              imageFile {
-                localFile {
-                  childImageSharp {
-                    fluid(maxWidth:1100) {
-                      ...GatsbyImageSharpFluid
+  query allNodeRecipe($id: String)
+  {
+    allNodeRecipe(filter: {id: {eq: $id}}) {
+      edges {
+        node {
+          id
+          drupal_id
+          ingredients: field_ingredients
+          difficulty: field_difficulty
+          createdAt: created(formatString: "DD-MM-YYYY")
+          preparationTime: field_preparation_time
+          cookingTime: field_cooking_time
+          isPublished: status
+          title
+          created
+          path {
+            alias
+          }
+          relationships {
+            field_media_image {
+              relationships {
+                field_media_image {
+                  localFile {
+                    childImageSharp {
+                      fluid(maxWidth: 1100) {
+                        ...GatsbyImageSharpFluid
+                      }
                     }
                   }
                 }
               }
             }
           }
-        } 
+        }
+      }
     }
   }
 `
