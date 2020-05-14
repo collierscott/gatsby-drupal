@@ -1,7 +1,7 @@
 import React from "react"
 import { graphql } from 'gatsby'
 import Img from "gatsby-image"
-import { Breadcrumbs, Link, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core"
+import { Breadcrumbs, Container, Link, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core"
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Layout from "../components/Layout"
 import SEO from "../components/Seo"
@@ -12,17 +12,7 @@ class RecipeTemplate extends React.Component {
     let recipe = this.props.data.nodeRecipe
 
     const image = recipe.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid
-    
-    const listItems = recipe.ingredients.map((ingredient, i) =>
-      <ListItem key={i}>
-        <ListItemIcon>
-          <CheckBoxOutlineBlankIcon />
-        </ListItemIcon>
-        <ListItemText>
-          {ingredient}
-        </ListItemText>
-      </ListItem>
-    )
+
     return (
       <Layout>
         <SEO
@@ -35,39 +25,41 @@ class RecipeTemplate extends React.Component {
         >
         <html lang="en"/>
         </SEO>
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link color="inherit" href="/">
-            Home
-          </Link>
-          <Link color="inherit" href="/recipe">
-            Recipes
-          </Link>
-          <Typography color="textPrimary">{recipe.title}</Typography>
-        </Breadcrumbs>
-        <h4>{recipe.title}</h4>
-        <div>
-          <Img fluid={image} />
-        </div>
-        <div>
-          {recipe.difficulty}
-        </div>
-        <div dangerouslySetInnerHTML={{__html: recipe.summary.processed }} />
-        <div>
-          <List component="nav" aria-label="ingredients" dense>
-            {recipe.ingredients &&
-              recipe.ingredients.map((ingredient, i) =>
-                <ListItem key={i}>
-                  <ListItemIcon>
-                    <CheckBoxOutlineBlankIcon />
-                  </ListItemIcon>
-                  <ListItemText>
-                    {ingredient}
-                  </ListItemText>
-                </ListItem>
-              )
-            }
-          </List>
-        </div>
+        <Container maxWidth="lg">
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link color="inherit" href="/">
+              Home
+            </Link>
+            <Link color="inherit" href="/recipe">
+              Recipes
+            </Link>
+            <Typography color="textPrimary">{recipe.title}</Typography>
+          </Breadcrumbs>
+          <h4>{recipe.title}</h4>
+          <div>
+            <Img fluid={image} />
+          </div>
+          <div>
+            {recipe.difficulty}
+          </div>
+          <div dangerouslySetInnerHTML={{__html: recipe.summary.processed }} />
+          <div>
+            <List component="nav" aria-label="ingredients" dense>
+              {recipe.ingredients &&
+                recipe.ingredients.map((ingredient, i) =>
+                  <ListItem key={i}>
+                    <ListItemIcon>
+                      <CheckBoxOutlineBlankIcon />
+                    </ListItemIcon>
+                    <ListItemText>
+                      {ingredient}
+                    </ListItemText>
+                  </ListItem>
+                )
+              }
+            </List>
+          </div>
+        </Container>
       </Layout>
     )
   }

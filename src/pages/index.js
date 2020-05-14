@@ -3,56 +3,114 @@ import Layout from "../components/Layout"
 import SEO from "../components/Seo"
 import { graphql } from 'gatsby'
 import { makeStyles } from '@material-ui/core/styles';
+import CardHeader from '@material-ui/core/CardHeader'
 import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardMedia from '@material-ui/core/CardMedia';
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import Carousel from "react-material-ui-carousel"
+import Paper from '@material-ui/core/CardMedia';
+import { Container } from '@material-ui/core';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ShareIcon from '@material-ui/icons/Share';
+import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 
 export default function IndexPage (props) {
     console.log(props.data);
-    const useStyles = makeStyles({
+
+    const useStyles = makeStyles((theme) => ({
       root: {
+        flexGrow: 1,
+      },
+      card: {
         maxWidth: 345,
       },
       media: {
         height: 140,
       },
-    });
+      paper: {
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+      },
+    }));
+
     const classes = useStyles();
     
-    const pages = props.data.allNodeRecipe.edges;
-    const pageTitles = pages.map(page => <li key={page.node.id}>{page.node.title}</li>);
     const recipeCount = props.data.allNodeRecipe.totalCount;
+    const banners = props.data.allBlockContentBannerBlock.edges;
     const items = props.data.allNodeRecipe.edges;
-    // const recipeList = recipes.map(recipe => <li key={recipe.node.id}><Link to={`/recipe/${recipe.node.id}/`}>{recipe.node.title}</Link></li>);
+
+    const viewRecipeStyle = {
+      marginRight: 0,
+      marginLeft: 'auto'
+    };
+
+    const bannerStyle = {
+      minHeight: '500px',
+      color: '#ffffff',
+    };
 
     return (
       <Layout>
         <SEO title="Home" />
-        <ul>{pageTitles}</ul>
-        There are {recipeCount} recipes.
-        {
-          items && items.map(item => 
-            <Card className={classes.root}>
-              <CardActionArea>
-                <Typography gutterBottom variant="h5" component="h2">
-                  {item.node.title}
-                </Typography>
-                <CardMedia
-                  className={classes.media}
-                  image={item.node.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src}
-                />
-              </CardActionArea>
-              <CardActions>
-                <Button size="small" color="primary" href={`/recipe/${item.node.id}/`}>
-                  View Recipe >>
-                </Button>
-              </CardActions>
-            </Card>
-          )
-        }
+        <div className={classes.root}>
+          <Grid item xs={12}>       
+            <Carousel autoPlay={false}>
+            {
+              banners && banners.map(banner => {
+                const b = banner.node;
+                const item = {
+                  name: b.title,
+                  description: b.summary,
+                  image: b.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src
+                }
+                return (
+                  <Item item={item} key={b.id} style={bannerStyle} />
+                )
+              })
+            }
+            </Carousel>
+          </Grid>
+        </div>
+        <Container maxWidth="lg">
+          <Paper>
+            <Grid container spacing={4}>
+            {
+              items && items.map(item => 
+                <Grid item key={item.node.id} xs={12} sm={6} md={4}>
+                  <Card className={classes.card}>
+                    <CardHeader
+                      title={item.node.title}
+                      subheader="test"
+                    />
+                    
+                      <CardMedia
+                        className={classes.media}
+                        alt={item.node.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.originalName}
+                        image={item.node.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src}
+                      />
+        
+                    <CardActions disableSpacing>
+                      <IconButton aria-label="add to favorites">
+                        <FavoriteIcon />
+                      </IconButton>
+                      <IconButton aria-label="share">
+                        <ShareIcon />
+                      </IconButton>
+                      <Button style={viewRecipeStyle} size="small" color="secondary" href={`/recipe/${item.node.id}/`}>
+                        View Recipe <DoubleArrowIcon />
+                      </Button>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              )
+            }
+            </Grid>
+          </Paper>
+        </Container>
       </Layout>
     );
 }
@@ -96,6 +154,7 @@ export const query = graphql`
                         srcSet
                         srcSetWebp
                         aspectRatio
+                        originalName
                       }
                     }
                   }
@@ -117,5 +176,77 @@ export const query = graphql`
         }
       }
     }
+    allBlockContentBannerBlock {
+      edges {
+        node {
+          id
+          title: field_title
+          summary: field_summary
+          isPublished: status
+          relationships {
+            field_media_image {
+              relationships {
+                field_media_image {
+                  localFile {
+                    childImageSharp {
+                      fluid(maxWidth: 2200) {
+                        src
+                        srcSet
+                        srcSetWebp
+                        aspectRatio
+                        originalName
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 `
+
+function Item(props)
+{
+    const bannerStyle = {
+      minHeight: '500px',
+      alignItems: 'center',
+      display: 'flex',
+    };
+
+    const summaryStyle = {
+      color: '#fff',
+      border: '1px solid #464646',
+      background: 'rgba(0,0,0,0.42)',
+      padding: '1.777em',
+    }
+
+    return (
+        <CardMedia
+          image={props.item.image}
+          title={props.item.name}
+          description={props.item.description}
+          style={bannerStyle}
+        >
+          <Container maxWidth="md">
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+            style={summaryStyle}
+            sm={6}
+          >
+              <h2>{props.item.name}</h2>
+              <p>{props.item.description}</p>
+
+              <Button className="CheckButton" variant="contained" color="secondary">
+                  View recipe
+              </Button>
+            </Grid>
+          </Container>
+        </CardMedia>
+    )
+}
