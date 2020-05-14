@@ -1,17 +1,17 @@
 import React from "react"
 import { graphql } from 'gatsby'
-import { Helmet } from "react-helmet"
-import Layout from "../components/Layout"
-import SEO from "../components/seo"
-import { Breadcrumbs, Button, Link, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core"
+import Img from "gatsby-image"
+import { Breadcrumbs, Link, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core"
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
+import Layout from "../components/Layout"
+import SEO from "../components/Seo"
 
-class ArticleTemplate extends React.Component {
+class RecipeTemplate extends React.Component {
   render() {
     console.log(this.props.data)
     let recipe = this.props.data.nodeRecipe
 
-    const image = recipe.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src
+    const image = recipe.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid
     
     const listItems = recipe.ingredients.map((ingredient, i) =>
       <ListItem key={i}>
@@ -22,28 +22,31 @@ class ArticleTemplate extends React.Component {
           {ingredient}
         </ListItemText>
       </ListItem>
-
     )
     return (
       <Layout>
-        <Helmet
+        <SEO
           title={recipe.title}
+          lang="en"
+          description={recipe.summary.value}
           meta={[
             { name: 'description', content: recipe.summary.value },
           ]}
         >
         <html lang="en"/>
-      </Helmet>
-        <SEO title={recipe.title} />
+        </SEO>
         <Breadcrumbs aria-label="breadcrumb">
-        <Link color="inherit" href="/">
-          Home
-        </Link>
-        <Typography color="textPrimary">{recipe.title}</Typography>
+          <Link color="inherit" href="/">
+            Home
+          </Link>
+          <Link color="inherit" href="/recipe">
+            Recipes
+          </Link>
+          <Typography color="textPrimary">{recipe.title}</Typography>
         </Breadcrumbs>
         <h4>{recipe.title}</h4>
         <div>
-          <img src={image} />
+          <Img fluid={image} />
         </div>
         <div>
           {recipe.difficulty}
@@ -51,7 +54,18 @@ class ArticleTemplate extends React.Component {
         <div dangerouslySetInnerHTML={{__html: recipe.summary.processed }} />
         <div>
           <List component="nav" aria-label="ingredients" dense>
-            {listItems}
+            {recipe.ingredients &&
+              recipe.ingredients.map((ingredient, i) =>
+                <ListItem key={i}>
+                  <ListItemIcon>
+                    <CheckBoxOutlineBlankIcon />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {ingredient}
+                  </ListItemText>
+                </ListItem>
+              )
+            }
           </List>
         </div>
       </Layout>
@@ -59,7 +73,7 @@ class ArticleTemplate extends React.Component {
   }
 }
 
-export default ArticleTemplate
+export default RecipeTemplate
 
 export const pageQuery = graphql`
   query recipe($id: String)
@@ -87,7 +101,7 @@ export const pageQuery = graphql`
             field_media_image {
               localFile {
                 childImageSharp {
-                  fluid(maxWidth: 1100) {
+                  fluid(maxWidth: 470, maxHeight: 353) {
                     ...GatsbyImageSharpFluid
                   }
                 }

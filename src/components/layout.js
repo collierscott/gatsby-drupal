@@ -8,7 +8,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
-import { Helmet } from "react-helmet"
+import SEO from "../components/Seo"
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Box, Container } from "@material-ui/core"
@@ -50,18 +50,17 @@ const Layout = ({ children }) => {
 
   return (
     <> 
-      <Helmet
+      <SEO
         title={data.site.siteMetadata.title}
+        lang="en"
         meta={[
           { name: 'description', content: data.site.siteMetadata.description },
         ]}
       >
-        <html lang="en"/>
-      </Helmet>
+      </SEO>
       <CssBaseline />
       <Container maxWidth="lg">
         <Header title={data.site.siteMetadata.title} sections={sections} />
-        <h1>{data.site.siteMetadata.title}</h1>
         <Box component="main">{children}</Box>
       </Container>
       <Footer title={data.site.siteMetadata.title} description=""/>
