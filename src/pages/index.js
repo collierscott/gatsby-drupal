@@ -63,7 +63,9 @@ export default function IndexPage ({ data }) {
                 const item = {
                   name: b.title,
                   description: b.summary,
-                  image: b.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src
+                  image: b.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src,
+                  uri: b.field_content_link.uri,
+                  uri_title: b.field_content_link.title
                 }
                 return (
                   <Item item={item} key={b.id} style={bannerStyle} />
@@ -98,7 +100,7 @@ export default function IndexPage ({ data }) {
                       <IconButton aria-label="share">
                         <ShareIcon />
                       </IconButton>
-                      <Button style={viewRecipeStyle} size="small" color="secondary" href={`/recipe/${item.node.id}/`}>
+                      <Button style={viewRecipeStyle} size="small" color="secondary" href={item.node.fields.slug}>
                         View Recipe <DoubleArrowIcon />
                       </Button>
                     </CardActions>
@@ -114,7 +116,7 @@ export default function IndexPage ({ data }) {
 }
 
 export const query = graphql`
-  {
+  query {
     allNodeRecipe(sort: {order: ASC, fields: created}, limit: 10) {
       totalCount
       edges {
@@ -122,6 +124,9 @@ export const query = graphql`
           id
           drupal_id
           title
+          fields {
+            slug
+          }
           langcode
           summary: field_summary {
             processed
@@ -131,7 +136,7 @@ export const query = graphql`
           }
           ingredients: field_ingredients
           difficulty: field_difficulty
-          createdAt: created(formatString: "DD-MM-YYYY")
+          createdAt: created(formatString: "MM-DD-YYYY")
           preparationTime: field_preparation_time
           cookingTime: field_cooking_time
           isPublished: status
@@ -180,6 +185,10 @@ export const query = graphql`
           id
           title: field_title
           summary: field_summary
+          field_content_link {
+            uri
+            title
+          }
           isPublished: status
           relationships {
             field_media_image {
@@ -239,9 +248,8 @@ function Item(props)
           >
               <h2>{props.item.name}</h2>
               <p>{props.item.description}</p>
-
-              <Button className="CheckButton" variant="contained" color="secondary">
-                  View recipe
+              <Button href={props.item.uri} className="CheckButton" variant="contained" color="secondary">
+                {props.item.uri_title} 
               </Button>
             </Grid>
           </Container>

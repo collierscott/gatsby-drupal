@@ -3,17 +3,17 @@
  *
  * See: https://www.gatsbyjs.org/docs/node-apis/
  */
-
 const _ = require(`lodash`)
 const Promise = require(`bluebird`)
 const path = require(`path`)
 const slash = require(`slash`)
 
 // Create a slug for each recipe and set it as a field on the node.
-exports.onCreateNode = ({ node, getNode, actions }) => {
+exports.onCreateNode = ({ node, actions }) => {
   const { createNodeField } = actions
   if (node.internal.type === `node__recipe`) {
-    const slug = `/recipes/${node.drupal_internal__nid}/`
+    // const slug = `/recipe/${node.drupal_internal__nid}/`
+    const slug = `${node.path.alias}/`
     createNodeField({
       node,
       name: `slug`,
@@ -26,8 +26,8 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
 // called after the Gatsby bootstrap is finished so you have
 // access to any information necessary to programatically
 // create pages.
-exports.createPages = ({ graphql, boundActionCreators }) => {
-  const { createPage } = boundActionCreators
+exports.createPages = ({ graphql, actions }) => {
+  const { createPage } = actions
   return new Promise((resolve, reject) => {
     // The “graphql” function allows us to run arbitrary
     // queries against the local Drupal graphql schema. Think of
@@ -35,30 +35,20 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
     // from the fetched data that you can run queries against.
     graphql(
       `{
-        allNodeRecipe {
-          edges {
-            node {
-              id
-              drupal_id
-              title
-              created
-              path {
-                alias
-              }
-              relationships {
-                field_media_image {
-                  relationships {
-                    field_media_image {
-                      localFile {
-                        absolutePath
-                      }
-                    }
-                  }
+          recipes: allNodeRecipe {
+            edges {
+              node {
+                internalId: drupal_internal__nid
+                title
+                path {
+                  alias
+                }
+                fields {
+                  slug
                 }
               }
             }
           }
-        }
       }
       `
     ).then(result => {
@@ -70,19 +60,22 @@ exports.createPages = ({ graphql, boundActionCreators }) => {
       const recipeTemplate = path.resolve(`./src/templates/recipe.js`)
       // We want to create a detailed page for each
       // article node. We'll just use the Drupal NID for the slug.
-      _.each(result.data.allNodeRecipe.edges, edge => {
+      _.each(({ node }) => {
+        console.log("++++++++++++++++++++++++++++");
         // Gatsby uses Redux to manage its internal state.
         // Plugins and sites can use functions like "createPage"
         // to interact with Gatsby.
+        console.log("Creating pages");
+        console.log(node.path.alias);
         createPage({
           // Each page is required to have a `path` as well
           // as a template component. The `context` is
           // optional but is often necessary so the template
           // can query data specific to each page.
-          path: `/recipe/${edge.node.id}/`,
-          component: slash(recipeTemplate),
+          path: node.path.alias,
+          component: recipeTemplate,
           context: {
-            id: edge.node.id,
+            slug: node.fields.slug,
           },
         })
       })

@@ -1,6 +1,6 @@
 module.exports = {
   siteMetadata: {
-    title: `Express Scripts Drupal Starter`,
+    title: `Gatsby Drupal Starter`,
     description: `Kick off your next, great project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
     author: `Scott Collier <scollier@express-scripts.com>`,
   },

@@ -9,7 +9,7 @@ import SEO from "../components/Seo"
 class RecipeTemplate extends React.Component {
   render() {
     console.log(this.props.data)
-    let recipe = this.props.data.nodeRecipe
+    let recipe = this.props.data.recipe
 
     const image = recipe.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid
 
@@ -68,9 +68,9 @@ class RecipeTemplate extends React.Component {
 export default RecipeTemplate
 
 export const pageQuery = graphql`
-  query recipe($id: String)
+  query($slug: String!)
   {
-    nodeRecipe(id: {eq: $id}) {
+    recipe: nodeRecipe(fields: { slug: { eq: $slug } }) {
       id
       drupal_id
       summary: field_summary {

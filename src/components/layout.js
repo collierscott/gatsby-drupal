@@ -28,8 +28,9 @@ const Layout = ({ children }) => {
   `)
 
   const sections = [
-    { title: 'Articles', url: '#' },
-    { title: 'Recipes', url: '/recipe/' },
+    { title: 'Home', url: '/' },
+    { title: 'Articles', url: '/articles/' },
+    { title: 'Recipes', url: '/recipes/' },
     { title: 'About', url: '/about/' },
   ];
 
