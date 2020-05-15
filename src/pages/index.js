@@ -17,8 +17,8 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 
-export default function IndexPage (props) {
-    console.log(props.data);
+export default function IndexPage ({ data }) {
+    console.log(data);
 
     const useStyles = makeStyles((theme) => ({
       root: {
@@ -38,10 +38,8 @@ export default function IndexPage (props) {
     }));
 
     const classes = useStyles();
-    
-    const recipeCount = props.data.allNodeRecipe.totalCount;
-    const banners = props.data.allBlockContentBannerBlock.edges;
-    const items = props.data.allNodeRecipe.edges;
+    const banners = data.allBlockContentBannerBlock.edges;
+    const items = data.allNodeRecipe.edges;
 
     const viewRecipeStyle = {
       marginRight: 0,
@@ -84,7 +82,7 @@ export default function IndexPage (props) {
                   <Card className={classes.card}>
                     <CardHeader
                       title={item.node.title}
-                      subheader="test"
+                      subheader={item.node.createdAt}
                     />
                     
                       <CardMedia
