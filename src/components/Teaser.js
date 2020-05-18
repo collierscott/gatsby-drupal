@@ -21,16 +21,16 @@ export default function Teaser(props) {
         media: {
           height: 140,
         },
-      }));
+    }));
 
-      const viewTeaserStyle = {
-        marginRight: 0,
-        marginLeft: 'auto'
-      };
-  
-      const classes = useStyles();
+    const viewTeaserStyle = {
+    marginRight: 0,
+    marginLeft: 'auto'
+    };
 
-      const image = getImageInfo(item);
+    const classes = useStyles();
+
+    const image = getImageInfo(item);
 
     return (
         <Grid item xs={12} sm={6} md={4}>

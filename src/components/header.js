@@ -16,8 +16,12 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   toolbarSecondary: {
-    justifyContent: 'space-between',
     overflowX: 'auto',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+    textAlign: 'right'
+  },
+  toolbarSecondaryItems: {
+    margin: '0 0 0 auto',
   },
   toolbarLink: {
     padding: theme.spacing(1),
@@ -28,13 +32,13 @@ const useStyles = makeStyles((theme) => ({
 export default function Header(props) {
   const classes = useStyles();
   const { sections, title } = props;
+
   return (
     <>
       <Toolbar className={classes.toolbar}>
-        <Button size="small">Subscribe</Button>
         <Typography
           component="h2"
-          variant="h5"
+          variant="h4"
           color="inherit"
           align="center"
           noWrap
@@ -49,19 +53,21 @@ export default function Header(props) {
           Sign In
         </Button>
       </Toolbar>
-      <Toolbar component="nav" variant="dense" className={classes.toolbarSecondary}>
-        {sections.map((section) => (
-          <Link
-            color="inherit"
-            noWrap
-            key={section.title}
-            variant="body2"
-            href={section.url}
-            className={classes.toolbarLink}
-          >
-            {section.title}
-          </Link>
-        ))}
+      <Toolbar component="nav" className={classes.toolbarSecondary}>
+        <div className={classes.toolbarSecondaryItems}>
+          {sections.map((section) => (
+            <Link
+              color="inherit"
+              noWrap
+              key={section.title}
+              variant="body2"
+              href={section.url}
+              className={classes.toolbarLink}
+            >
+              {section.title}
+            </Link>
+          ))}
+        </div>
       </Toolbar>
     </>
   );
