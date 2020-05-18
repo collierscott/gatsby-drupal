@@ -1,17 +1,37 @@
 import React from "react"
-import { graphql } from 'gatsby'
+import { graphql } from 'gatsby';
+import { makeStyles } from '@material-ui/core/styles';
 import Img from "gatsby-image"
 import { Breadcrumbs, Container, Link, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core"
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/CardMedia';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Layout from "../components/Layout"
 import SEO from "../components/Seo"
 
 class RecipeTemplate extends React.Component {
+
   render() {
-    console.log(this.props.data)
-    let recipe = this.props.data.recipe
+    console.log(this.props.data);
+
+    let recipe = this.props.data.recipe;
 
     const image = recipe.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid
+
+    const bannerStyle = {
+      flexGrow: 1,
+      minHeight: '500px',
+      alignItems: 'center',
+      display: 'flex',
+    };
+
+    const summaryStyle = {
+      color: '#fff',
+      border: '1px solid #464646',
+      background: 'rgba(0,0,0,0.42)',
+      padding: '1.777em',
+      marginTop: '20px',
+    }
 
     return (
       <Layout>
@@ -23,7 +43,7 @@ class RecipeTemplate extends React.Component {
             { name: 'description', content: recipe.summary.value },
           ]}
         >
-        <html lang="en"/>
+          <html lang="en"/>
         </SEO>
         <Container maxWidth="lg">
           <Breadcrumbs aria-label="breadcrumb">
@@ -35,30 +55,48 @@ class RecipeTemplate extends React.Component {
             </Link>
             <Typography color="textPrimary">{recipe.title}</Typography>
           </Breadcrumbs>
-          <h4>{recipe.title}</h4>
-          <div>
+        </Container>
+        <Container fluid>
+          <Paper>
+            <h1>{recipe.title}</h1>
+            </Paper>
+        </Container>
+        <div style={bannerStyle}>
+          <Grid item xs={12} item={true}> 
             <Img fluid={image} />
-          </div>
-          <div>
-            {recipe.difficulty}
-          </div>
-          <div dangerouslySetInnerHTML={{__html: recipe.summary.processed }} />
-          <div>
-            <List component="nav" aria-label="ingredients" dense>
-              {recipe.ingredients &&
-                recipe.ingredients.map((ingredient, i) =>
-                  <ListItem key={i}>
-                    <ListItemIcon>
-                      <CheckBoxOutlineBlankIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                      {ingredient}
-                    </ListItemText>
-                  </ListItem>
-                )
-              }
-            </List>
-          </div>
+          </Grid> 
+        </div>
+
+        <Container maxWidth="lg">
+          <Paper elevation={3}  style={summaryStyle}>
+            <h4>
+              Difficulty:  
+            </h4>
+            <p>{recipe.difficulty}</p>
+            <p>
+              <h4>Description</h4>
+              <div dangerouslySetInnerHTML={{__html: recipe.summary.processed }} />
+            </p>
+          </Paper>
+          <Paper elevation={3}>
+            <div>
+              <h3>Ingredients</h3>
+              <List component="nav" aria-label="ingredients" dense>
+                {recipe.ingredients &&
+                  recipe.ingredients.map((ingredient, i) =>
+                    <ListItem key={i}>
+                      <ListItemIcon>
+                        <CheckBoxOutlineBlankIcon />
+                      </ListItemIcon>
+                      <ListItemText>
+                        {ingredient}
+                      </ListItemText>
+                    </ListItem>
+                  )
+                }
+              </List>
+            </div>
+          </Paper>
         </Container>
       </Layout>
     )
