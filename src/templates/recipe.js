@@ -30,7 +30,7 @@ class RecipeTemplate extends React.Component {
             <Link color="inherit" href="/">
               Home
             </Link>
-            <Link color="inherit" href="/recipe">
+            <Link color="inherit" href="/recipes">
               Recipes
             </Link>
             <Typography color="textPrimary">{recipe.title}</Typography>
