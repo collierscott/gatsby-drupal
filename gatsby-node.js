@@ -11,7 +11,11 @@ const slash = require(`slash`)
 // Create a slug for each recipe and set it as a field on the node.
 exports.onCreateNode = ({ node, actions }) => {
   const { createNodeField } = actions
-  if (node.internal.type === `node__recipe`) {
+  if (
+    node.internal.type === `node__recipe` ||
+    node.internal.type === `node__page` ||
+    node.internal.type === `node__article`
+  ) {
     // const slug = `/recipe/${node.drupal_internal__nid}/`
     const slug = `${node.path.alias}/`
     createNodeField({
@@ -49,26 +53,52 @@ exports.createPages = ({ graphql, actions }) => {
               }
             }
           }
+          articles: allNodeArticle {
+            edges {
+              node {
+                internalId: drupal_internal__nid
+                title
+                path {
+                  alias
+                }
+                fields {
+                  slug
+                }
+              }
+            }
+          }
+          pages: allNodePage {
+            edges {
+              node {
+                internalId: drupal_internal__nid
+                title
+                path {
+                  alias
+                }
+                fields {
+                  slug
+                }
+              }
+            }
+          }
       }
       `
     ).then(result => {
-      console.log(result);
       if (result.errors) {
         reject(result.errors)
       }
 
       // Create HN story pages.
-      const recipeTemplate = path.resolve(`./src/templates/recipe.js`)
+      const recipeTemplate = path.resolve(`./src/templates/recipe.js`);
+      const articleTemplate = path.resolve(`./src/templates/article.js`);
+      const pageTemplate = path.resolve(`./src/templates/page.js`);
+
       // We want to create a detailed page for each
-      // article node. We'll just use the Drupal NID for the slug.
+      // recipe node. We'll just use the Drupal NID for the slug.
       _.each(result.data.recipes.edges, edge => {
-        console.log("++++++++++++++++++++++++++++");
         // Gatsby uses Redux to manage its internal state.
         // Plugins and sites can use functions like "createPage"
         // to interact with Gatsby.
-        console.log(edge);
-        console.log("Creating pages");
-        console.log(edge.node.path.alias);
         createPage({
           // Each page is required to have a `path` as well
           // as a template component. The `context` is
@@ -76,6 +106,40 @@ exports.createPages = ({ graphql, actions }) => {
           // can query data specific to each page.
           path: edge.node.path.alias,
           component: recipeTemplate,
+          context: {
+            slug: edge.node.fields.slug,
+          },
+        })
+      })
+
+      _.each(result.data.articles.edges, edge => {
+        // Gatsby uses Redux to manage its internal state.
+        // Plugins and sites can use functions like "createPage"
+        // to interact with Gatsby.
+        createPage({
+          // Each page is required to have a `path` as well
+          // as a template component. The `context` is
+          // optional but is often necessary so the template
+          // can query data specific to each page.
+          path: edge.node.path.alias,
+          component: articleTemplate,
+          context: {
+            slug: edge.node.fields.slug,
+          },
+        })
+      })
+
+      _.each(result.data.pages.edges, edge => {
+        // Gatsby uses Redux to manage its internal state.
+        // Plugins and sites can use functions like "createPage"
+        // to interact with Gatsby.
+        createPage({
+          // Each page is required to have a `path` as well
+          // as a template component. The `context` is
+          // optional but is often necessary so the template
+          // can query data specific to each page.
+          path: edge.node.path.alias,
+          component: pageTemplate,
           context: {
             slug: edge.node.fields.slug,
           },

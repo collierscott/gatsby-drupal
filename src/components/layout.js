@@ -31,7 +31,7 @@ const Layout = ({ children }) => {
     { title: 'Home', url: '/' },
     { title: 'Articles', url: '/articles/' },
     { title: 'Recipes', url: '/recipes/' },
-    { title: 'About', url: '/about/' },
+    { title: 'About', url: '/about-umami' },
   ];
 
   const mainStyle = {
