@@ -8,11 +8,15 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
-
+import SEO from "../components/Seo"
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { Box, Grid } from "@material-ui/core"
+import Footer from "./footer"
 import Header from "./header"
-import "./layout.css"
+import "./css/layout.css"
 
 const Layout = ({ children }) => {
+
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
@@ -23,23 +27,33 @@ const Layout = ({ children }) => {
     }
   `)
 
+  const sections = [
+    { title: 'Home', url: '/' },
+    { title: 'Articles', url: '/articles/' },
+    { title: 'Recipes', url: '/recipes/' },
+    { title: 'About', url: '/about-umami' },
+  ];
+
+  const mainStyle = {
+    paddingBottom: '25px',
+  };
+
   return (
-    <>
-      <Header siteTitle={data.site.siteMetadata.title} />
-      <div
-        style={{
-          margin: `0 auto`,
-          maxWidth: 960,
-          padding: `0 1.0875rem 1.45rem`,
-        }}
+    <> 
+      <SEO
+        title={data.site.siteMetadata.title}
+        lang="en"
+        meta={[
+          { name: 'description', content: data.site.siteMetadata.description },
+        ]}
       >
-        <main>{children}</main>
-        <footer>
-          © {new Date().getFullYear()}, Built with
-          {` `}
-          <a href="https://www.gatsbyjs.org">Gatsby</a>
-        </footer>
-      </div>
+      </SEO>
+      <CssBaseline />
+      <Grid xs={12} item={true}>
+        <Header title={data.site.siteMetadata.title} sections={sections} />
+        <Box component="main" style={mainStyle}>{children}</Box>
+      </Grid>
+      <Footer title={data.site.siteMetadata.title} description=""/>
     </>
   )
 }
