@@ -52,6 +52,7 @@ exports.createPages = ({ graphql, actions }) => {
       }
       `
     ).then(result => {
+      console.log(result);
       if (result.errors) {
         reject(result.errors)
       }
@@ -60,22 +61,23 @@ exports.createPages = ({ graphql, actions }) => {
       const recipeTemplate = path.resolve(`./src/templates/recipe.js`)
       // We want to create a detailed page for each
       // article node. We'll just use the Drupal NID for the slug.
-      _.each(({ node }) => {
+      _.each(result.data.recipes.edges, edge => {
         console.log("++++++++++++++++++++++++++++");
         // Gatsby uses Redux to manage its internal state.
         // Plugins and sites can use functions like "createPage"
         // to interact with Gatsby.
+        console.log(edge);
         console.log("Creating pages");
-        console.log(node.path.alias);
+        console.log(edge.node.path.alias);
         createPage({
           // Each page is required to have a `path` as well
           // as a template component. The `context` is
           // optional but is often necessary so the template
           // can query data specific to each page.
-          path: node.path.alias,
+          path: edge.node.path.alias,
           component: recipeTemplate,
           context: {
-            slug: node.fields.slug,
+            slug: edge.node.fields.slug,
           },
         })
       })
