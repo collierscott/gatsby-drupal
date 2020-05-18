@@ -1,22 +1,17 @@
-import React from 'react'
-import Layout from "../components/Layout"
-import SEO from "../components/Seo"
-import { graphql } from 'gatsby'
+import React from 'react';
+import { graphql } from 'gatsby';
 import { makeStyles } from '@material-ui/core/styles';
-import CardHeader from '@material-ui/core/CardHeader'
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardMedia from '@material-ui/core/CardMedia';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Carousel from "react-material-ui-carousel"
-import Paper from '@material-ui/core/CardMedia';
+import Carousel from 'react-material-ui-carousel';
 import { Container } from '@material-ui/core';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/CardMedia';
+import BannerItem from '../components/BannerItem';
+import Layout from '../components/Layout';
+import SEO from '../components/Seo';
+import Teaser from '../components/Teaser';
 import cleanBlockUrl from '../util/utilities';
+import {getImageInfo} from '../util/utilities';
 
 export default function IndexPage ({ data }) {
     console.log(data);
@@ -25,32 +20,24 @@ export default function IndexPage ({ data }) {
       root: {
         flexGrow: 1,
       },
-      card: {
-        maxWidth: 345,
-      },
-      media: {
-        height: 140,
-      },
-      paper: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-      },
     }));
 
     const classes = useStyles();
     const banners = data.allBlockContentBannerBlock.edges;
     const items = data.allNodeRecipe.edges;
 
-    const viewRecipeStyle = {
-      marginRight: 0,
-      marginLeft: 'auto'
-    };
-
     const bannerStyle = {
       minHeight: '500px',
-      color: '#ffffff',
+      alignItems: 'center',
+      display: 'flex',
     };
+
+    const summaryStyle = {
+      color: '#fff',
+      border: '1px solid #464646',
+      background: 'rgba(0,0,0,0.42)',
+      padding: '1.777em',
+    }
 
     return (
       <Layout>
@@ -64,15 +51,17 @@ export default function IndexPage ({ data }) {
 
                 const uri = cleanBlockUrl(b.field_content_link.uri);
 
+                const image = getImageInfo(banner);
+
                 const item = {
                   name: b.title,
                   description: b.summary,
-                  image: b.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src,
+                  image: image.src,
                   uri: uri,
                   uri_title: b.field_content_link.title
                 }
                 return (
-                  <Item item={item} key={b.id} style={bannerStyle} />
+                  <BannerItem item={item} key={b.id} bannerStyle={bannerStyle} summaryStyle={summaryStyle}/>
                 )
               })
             }
@@ -84,32 +73,7 @@ export default function IndexPage ({ data }) {
             <Grid container spacing={4}>
             {
               items && items.map(item => 
-                <Grid item key={item.node.id} xs={12} sm={6} md={4}>
-                  <Card className={classes.card}>
-                    <CardHeader
-                      title={item.node.title}
-                      subheader={item.node.createdAt}
-                    />
-                    
-                      <CardMedia
-                        className={classes.media}
-                        alt={item.node.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.originalName}
-                        image={item.node.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src}
-                      />
-        
-                    <CardActions disableSpacing>
-                      <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
-                      </IconButton>
-                      <IconButton aria-label="share">
-                        <ShareIcon />
-                      </IconButton>
-                      <Button style={viewRecipeStyle} size="small" color="secondary" href={item.node.fields.slug}>
-                        View Recipe <DoubleArrowIcon />
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
+              <Teaser key={item.node.id} item={item} buttonTitle='View Recipe' buttonIcon={<DoubleArrowIcon />} />
               )
             }
             </Grid>
@@ -218,46 +182,3 @@ export const query = graphql`
     }
   }
 `
-
-function Item(props)
-{
-    const bannerStyle = {
-      minHeight: '500px',
-      alignItems: 'center',
-      display: 'flex',
-    };
-
-    const summaryStyle = {
-      color: '#fff',
-      border: '1px solid #464646',
-      background: 'rgba(0,0,0,0.42)',
-      padding: '1.777em',
-    }
-
-    return (
-        <CardMedia
-          image={props.item.image}
-          title={props.item.name}
-          description={props.item.description}
-          style={bannerStyle}
-        >
-          <Container maxWidth="md">
-          <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="center"
-            style={summaryStyle}
-            sm={6}
-            item={true}
-          >
-              <h2>{props.item.name}</h2>
-              <p>{props.item.description}</p>
-              <Button href={props.item.uri} className="CheckButton" variant="contained" color="secondary">
-                {props.item.uri_title} 
-              </Button>
-            </Grid>
-          </Container>
-        </CardMedia>
-    )
-}
