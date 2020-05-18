@@ -2,6 +2,8 @@ import React from "react"
 import { graphql } from 'gatsby'
 import Img from "gatsby-image"
 import { Breadcrumbs, Container, Link, List, ListItem, ListItemIcon, ListItemText, Typography } from "@material-ui/core"
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/CardMedia';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Layout from "../components/Layout"
 import SEO from "../components/Seo"
@@ -35,30 +37,35 @@ class RecipeTemplate extends React.Component {
             </Link>
             <Typography color="textPrimary">{recipe.title}</Typography>
           </Breadcrumbs>
-          <h4>{recipe.title}</h4>
-          <div>
-            <Img fluid={image} />
-          </div>
-          <div>
-            {recipe.difficulty}
-          </div>
-          <div dangerouslySetInnerHTML={{__html: recipe.summary.processed }} />
-          <div>
-            <List component="nav" aria-label="ingredients" dense>
-              {recipe.ingredients &&
-                recipe.ingredients.map((ingredient, i) =>
-                  <ListItem key={i}>
-                    <ListItemIcon>
-                      <CheckBoxOutlineBlankIcon />
-                    </ListItemIcon>
-                    <ListItemText>
-                      {ingredient}
-                    </ListItemText>
-                  </ListItem>
-                )
-              }
-            </List>
-          </div>
+          <Paper>
+            <h1>{recipe.title}</h1>
+            <Grid item xs={12} item={true}> 
+              <Img fluid={image} />
+            </Grid> 
+            <h4>
+              Difficulty:  {recipe.difficulty}
+            </h4>
+            <p>
+              <div dangerouslySetInnerHTML={{__html: recipe.summary.processed }} />
+            </p>
+            <div>
+              <h3>Ingredients</h3>
+              <List component="nav" aria-label="ingredients" dense>
+                {recipe.ingredients &&
+                  recipe.ingredients.map((ingredient, i) =>
+                    <ListItem key={i}>
+                      <ListItemIcon>
+                        <CheckBoxOutlineBlankIcon />
+                      </ListItemIcon>
+                      <ListItemText>
+                        {ingredient}
+                      </ListItemText>
+                    </ListItem>
+                  )
+                }
+              </List>
+            </div>
+          </Paper>
         </Container>
       </Layout>
     )
