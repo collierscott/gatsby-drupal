@@ -16,6 +16,7 @@ import { Container } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import cleanBlockUrl from '../util/utilities';
 
 export default function IndexPage ({ data }) {
     console.log(data);
@@ -55,16 +56,19 @@ export default function IndexPage ({ data }) {
       <Layout>
         <SEO title="Home" />
         <div className={classes.root}>
-          <Grid item xs={12}>       
+          <Grid item xs={12} item={true}>       
             <Carousel autoPlay={false}>
             {
               banners && banners.map(banner => {
                 const b = banner.node;
+
+                const uri = cleanBlockUrl(b.field_content_link.uri);
+
                 const item = {
                   name: b.title,
                   description: b.summary,
                   image: b.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src,
-                  uri: b.field_content_link.uri,
+                  uri: uri,
                   uri_title: b.field_content_link.title
                 }
                 return (
@@ -245,6 +249,7 @@ function Item(props)
             alignItems="center"
             style={summaryStyle}
             sm={6}
+            item={true}
           >
               <h2>{props.item.name}</h2>
               <p>{props.item.description}</p>

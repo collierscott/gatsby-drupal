@@ -49,7 +49,7 @@ const Layout = ({ children }) => {
       >
       </SEO>
       <CssBaseline />
-      <Grid xs={12}>
+      <Grid xs={12} item={true}>
         <Header title={data.site.siteMetadata.title} sections={sections} />
         <Box component="main" style={mainStyle}>{children}</Box>
       </Grid>
