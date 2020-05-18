@@ -27,9 +27,6 @@ class PageTemplate extends React.Component {
                 <Link color="inherit" href="/">
                 Home
                 </Link>
-                <Link color="inherit" href="/articles">
-                Articles
-                </Link>
                 <Typography color="textPrimary">{page.title}</Typography>
             </Breadcrumbs>
             <h4>{page.title}</h4>

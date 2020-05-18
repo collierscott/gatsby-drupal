@@ -1,46 +1,60 @@
 import React from "react"
-import Link from "gatsby-link"
 import { graphql } from 'gatsby'
+import Img from "gatsby-image"
+import { Breadcrumbs, Container, Link, List, ListItem, ListItemText, Typography } from "@material-ui/core"
 import Layout from "../components/Layout"
-import SEO from "../components/seo"
-
-//import { rhythm } from "../utils/typography"
+import SEO from "../components/Seo"
 
 class ArticleTemplate extends React.Component {
   render() {
     console.log(this.props.data)
-    let recipe = this.props.data.allNodeRecipe.edges
+    let item = this.props.data.article;
 
-    if(recipe.length > 0) {
-      recipe = recipe[0]
-    }
+    console.log(item);
 
-    const image = recipe.node.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid.src
-    
-    const listItems = recipe.node.ingredients.map((ingredient, i) =>
-      <li key={i}>{ingredient}</li>
-
-    )
+    const image = item.relationships.field_media_image.relationships.field_media_image.localFile.childImageSharp.fluid
+    const summary = item.body.value.substring(0, 300);
     return (
       <Layout>
-        <SEO title={recipe.title} />
-        <Link
-          to="/"
+        <SEO
+          title={item.title}
+          lang="en"
+          description={summary}
+          meta={[
+            { name: 'description', content: summary },
+          ]}
         >
-          ← Back
-        </Link>
-        <h4>{recipe.title}</h4>
-        <div>
-          <img src={image} />
-        </div>
-        <div>
-          {recipe.difficulty}
-        </div>
-        <div>
-          <ul>
-            {listItems}
-          </ul>
-        </div>
+        <html lang="en"/>
+        </SEO>
+        <Container maxWidth="lg">
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link color="inherit" href="/">
+              Home
+            </Link>
+            <Link color="inherit" href="/articles">
+              Articles
+            </Link>
+            <Typography color="textPrimary">{item.title}</Typography>
+          </Breadcrumbs>
+          <h4>{item.title}</h4>
+          <div>
+            <Img fluid={image} />
+          </div>
+          <div dangerouslySetInnerHTML={{__html: item.body.processed }} />
+          <div>
+            <List component="nav" aria-label="tags" dense>
+              {item.tags &&
+                item.tags.map((tag, i) =>
+                  <ListItem key={i}>
+                    <ListItemText>
+                      {tag}
+                    </ListItemText>
+                  </ListItem>
+                )
+              }
+            </List>
+          </div>
+        </Container>
       </Layout>
     )
   }
@@ -49,34 +63,31 @@ class ArticleTemplate extends React.Component {
 export default ArticleTemplate
 
 export const pageQuery = graphql`
-  query allNodeRecipe($id: String)
+  query($slug: String!)
   {
-    allNodeRecipe(filter: {id: {eq: $id}}) {
-      edges {
-        node {
-          id
-          drupal_id
-          ingredients: field_ingredients
-          difficulty: field_difficulty
-          createdAt: created(formatString: "DD-MM-YYYY")
-          preparationTime: field_preparation_time
-          cookingTime: field_cooking_time
-          isPublished: status
-          title
-          created
+    article: nodeArticle(fields: { slug: { eq: $slug } }) {
+      id
+      drupal_id
+      body {
+        format
+        processed
+        value
+      }
+      title
+      relationships {
+        field_tags {
           path {
             alias
           }
+          name
+        }
+        field_media_image {
           relationships {
             field_media_image {
-              relationships {
-                field_media_image {
-                  localFile {
-                    childImageSharp {
-                      fluid(maxWidth: 1100) {
-                        ...GatsbyImageSharpFluid
-                      }
-                    }
+              localFile {
+                childImageSharp {
+                  fluid(maxWidth: 470, maxHeight: 353) {
+                    ...GatsbyImageSharpFluid
                   }
                 }
               }
