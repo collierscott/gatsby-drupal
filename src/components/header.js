@@ -1,42 +1,79 @@
-import { Link } from "gatsby"
-import PropTypes from "prop-types"
-import React from "react"
+import React from 'react';
+import PropTypes from 'prop-types';
+import { makeStyles } from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+import Typography from '@material-ui/core/Typography';
+import Link from '@material-ui/core/Link';
 
-const Header = ({ siteTitle }) => (
-  <header
-    style={{
-      background: `rebeccapurple`,
-      marginBottom: `1.45rem`,
-    }}
-  >
-    <div
-      style={{
-        margin: `0 auto`,
-        maxWidth: 960,
-        padding: `1.45rem 1.0875rem`,
-      }}
-    >
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`,
-          }}
+const useStyles = makeStyles((theme) => ({
+  toolbar: {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
+  toolbarTitle: {
+    flex: 1,
+  },
+  toolbarSecondary: {
+    overflowX: 'auto',
+    borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
+    textAlign: 'right'
+  },
+  toolbarSecondaryItems: {
+    margin: '0 0 0 auto',
+  },
+  toolbarLink: {
+    padding: theme.spacing(1),
+    flexShrink: 0,
+  },
+}));
+
+export default function Header(props) {
+  const classes = useStyles();
+  const { sections, title } = props;
+
+  return (
+    <>
+      <Toolbar className={classes.toolbar}>
+        <Typography
+          component="h2"
+          variant="h4"
+          color="inherit"
+          align="center"
+          noWrap
+          className={classes.toolbarTitle}
         >
-          {siteTitle}
-        </Link>
-      </h1>
-    </div>
-  </header>
-)
+          {title}
+        </Typography>
+        <IconButton href="/search">
+          <SearchIcon  />
+        </IconButton>
+        {/* <Button variant="outlined" size="small">
+          Sign In
+        </Button> */}
+      </Toolbar>
+      <Toolbar component="nav" className={classes.toolbarSecondary}>
+        <div className={classes.toolbarSecondaryItems}>
+          {sections.map((section) => (
+            <Link
+              color="inherit"
+              noWrap
+              key={section.title}
+              variant="body2"
+              href={section.url}
+              className={classes.toolbarLink}
+            >
+              {section.title}
+            </Link>
+          ))}
+        </div>
+      </Toolbar>
+    </>
+  );
+}
 
 Header.propTypes = {
-  siteTitle: PropTypes.string,
-}
-
-Header.defaultProps = {
-  siteTitle: ``,
-}
-
-export default Header
+  sections: PropTypes.array,
+  title: PropTypes.string,
+};
