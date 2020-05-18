@@ -46,12 +46,12 @@ export default function Header(props) {
         >
           {title}
         </Typography>
-        <IconButton>
-          <SearchIcon />
+        <IconButton href="/search">
+          <SearchIcon  />
         </IconButton>
-        <Button variant="outlined" size="small">
+        {/* <Button variant="outlined" size="small">
           Sign In
-        </Button>
+        </Button> */}
       </Toolbar>
       <Toolbar component="nav" className={classes.toolbarSecondary}>
         <div className={classes.toolbarSecondaryItems}>
