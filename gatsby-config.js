@@ -2,13 +2,13 @@ module.exports = {
   siteMetadata: {
     title: `Gatsby Drupal Starter`,
     description: `Kick off your next, great project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `Scott Collier <scollier@express-scripts.com>`,
+    author: `Scott Collier <scott@onlinespaces.com>`,
   },
   plugins: [
     {
       resolve: `gatsby-source-drupal`,
       options: {
-        baseUrl: `http://localhost:9999`,
+        baseUrl: `http://drupal-115480-1302444.cloudwaysapps.com/`,
         apiBase: `api`, // optional, defaults to `jsonapi`
       },
     },
