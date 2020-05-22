@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/CardMedia';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import Layout from "../components/Layout"
-import SEO from "../components/Seo"
+import SEO from "../components/SEO"
 
 class RecipeTemplate extends React.Component {
 

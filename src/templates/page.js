@@ -2,7 +2,7 @@ import React from "react"
 import { graphql } from 'gatsby'
 import { Breadcrumbs, Container, Link, Typography } from "@material-ui/core"
 import Layout from "../components/Layout"
-import SEO from "../components/seo"
+import SEO from "../components/SEO"
 
 class PageTemplate extends React.Component {
   render() {

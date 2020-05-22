@@ -8,12 +8,12 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
-import SEO from "../components/Seo"
+import SEO from "../components/SEO"
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Box, Grid } from "@material-ui/core"
-import Footer from "./footer"
-import Header from "./header"
-import "./css/layout.css"
+import Footer from "./Footer"
+import Header from "./Header"
+import "./css/Layout.css"
 
 const Layout = ({ children }) => {
 

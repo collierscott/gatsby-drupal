@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/CardMedia';
 import BannerItem from '../components/BannerItem';
 import Layout from '../components/Layout';
-import SEO from '../components/Seo';
+import SEO from '../components/SEO';
 import Teaser from '../components/Teaser';
 import cleanBlockUrl from '../util/utilities';
 import {getImageInfo} from '../util/utilities';
